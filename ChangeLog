@@ -1,3 +1,17 @@
+06/12/2023 Roberto Puzzanghera
+        - added jms "debug" patch, to improve the debugging of simscan on
+          qmail-smtpd log;
+        - bug fix by Bob Greco where a received message with multiple
+          'local' recipients executes spamc as null user and not as the
+          user extracted from the first local recipient.
+        - added Roberto Puzzanghera's attachments-size-limit patch, which allows
+          you to overcome a limitation where simscan doesn't pass messages
+          over 250k to spamassassin. This patch let the administrator set
+          the attachments' size limit in bytes by setting the
+          qmail/control/simsizelimit file. Furthermore, events where simscan
+          is not activated are now logged at smtpd level (it was logged
+          only when debug is active).
+
 01/23/2014 Johannes Weberhofer
         - Removed empty INSTALL file, added .gitattributes
         - renamed configure.in and fixed it to work with newer automake
