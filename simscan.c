@@ -102,6 +102,7 @@ int remove_files(char *dir);
 int str_rstr(register char *h,register char *n);
 char *replace(char *string, char *oldpiece, char *newpiece);
 int DebugFlag = 0;
+int DebugFiles = 0;
 
 /* --stdout is required for reading virus names */
 char *viri_args[] = { "clamdscan", "--stdout", message_name, NULL };
@@ -171,6 +172,7 @@ int check_trophie();
 int InClamHeaders;
 int check_clam();
 int is_clam(char *clambuf);
+void log_clam(char *clambuf);
 #endif
 
 /* Attachment scanning globals */
@@ -273,6 +275,11 @@ int main(int argc, char **argv)
   /* Set the debug flag if environment variable set */ 
   if ( (tmpstr=getenv("SIMSCAN_DEBUG"))!=NULL ) {
     DebugFlag = atoi(tmpstr);
+  }
+
+  /* Set the "leave temp files alone" flag */
+  if ( (tmpstr=getenv("SIMSCAN_DEBUG_FILES"))!=NULL ) {
+    DebugFiles = atoi(tmpstr);
   }
   
 #ifdef ENABLE_ATTACH
@@ -828,10 +835,12 @@ if (msgsize >= 250000) {
   }
 
   /* remove the working files */
-  if ( remove_files(workdir) == -1 ) {
-    exit_clean(EXIT_400);
+  if ( DebugFiles < 2 ) {
+    if ( remove_files(workdir) == -1 ) {
+      exit_clean(EXIT_400);
+    }
   }
-  
+
   /* pass qmail-queue's exit status on */
   _exit(WEXITSTATUS(qstat));
 
@@ -984,6 +993,7 @@ int check_clam()
   InClamHeaders = 1;
   memset(buffer,0,sizeof(buffer));
   while((file_count=read(0,buffer,BUFFER_SIZE))>0) {
+    if ( DebugFlag > 2 ) log_clam(buffer) ;
     if ( InClamHeaders == 1 ) {
       is_clam(buffer);
     }
@@ -1008,6 +1018,35 @@ int check_clam()
 
   /* should not reach here */
   return(-1);
+}
+
+void log_clam(char *clambuf)
+{
+	char *p ;
+	int needh = 1 ;
+
+	p = clambuf ;
+	while ( *p )
+	{
+		if ( *p != '\r' )
+		{
+			if ( needh )
+			{
+				fputs ( "simscan: clamdscan: " , stderr ) ;
+				needh = 0 ;
+			}
+
+			fputc ( *p , stderr ) ;
+
+			if ( *p == '\n' )
+				needh = 1 ;
+		}
+
+		p++ ;
+	}
+
+	if ( ! needh )
+		fputc ( '\n' , stderr ) ;
 }
 
 int is_clam(char *clambuf)
@@ -1638,7 +1677,8 @@ void quarantine_msg(char *message_name)
  */
 void exit_clean( int error_code )
 {
-  remove_files(workdir);
+  if ( DebugFiles < 1 )
+    remove_files(workdir);
   if ( DebugFlag > 0 ) {
     fprintf(stderr, "simscan:[%d]: exit error code: %d\n", getppid(), error_code); 
   }
