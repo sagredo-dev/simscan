@@ -1,5 +1,8 @@
+# simscan
+
 Additional information and a guide can be found at
-http://qmailwiki.inter7.com/index.php?title=Simscan
+https://notes.sagredo.eu/en/qmail-notes-185/installing-and-configuring-simscan-38.html
+Post any issue there.
 
 = Overview =
 SimScan is a simplified scanner for qmail similar to qmail-scanner and qscand.
