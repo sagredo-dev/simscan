@@ -255,6 +255,11 @@ int main(int argc, char **argv)
  int i = 0;
  int gotrcpt = 0;
  int gotfrom = 0;
+ /* attachments-size-limit patch */
+ char ch, simsizelimit_file[300], buf[32];
+ FILE *simsizelimit;
+ int size_limit=250000, buflen=0, ibuf;
+ /* end attachments-size-limit patch */
 
   /* print out version information if requested */
   if ( argc > 1 && strcmp(argv[1],"-v" )==0 ) {
@@ -553,11 +558,33 @@ int main(int argc, char **argv)
 #endif
 
 #ifdef ENABLE_SPAM
-if (msgsize >= 250000) {
-  if ( DebugFlag > 0 ) {
-    fprintf(stderr, "simscan: big file (%lu bytes); skipping SpamAssassin\n",
-      (unsigned long) msgsize);
+/* attachments-size-limit patch */
+// read control/simsizelimit file
+snprintf(simsizelimit_file, sizeof(simsizelimit_file), "%s/simsizelimit", CONTROLDIR);
+simsizelimit = fopen(simsizelimit_file, "r");
+if( simsizelimit != NULL ) {
+  while(1) {
+    ch = fgetc(simsizelimit);
+    if(ch==EOF || ch==' ' || ch=='\n' || ch=='\t' || ch=='\r') {
+      ibuf = atoi(buf);
+      // returns 0 if it's not an integer
+      if (ibuf > 0) size_limit = ibuf;
+      break;
+    }
+    else {
+      buf[buflen] = ch;
+      buflen++;
+    }
   }
+  fclose(simsizelimit);
+}
+if ( DebugFlag > 0 ) fprintf(stderr, "simscan: size limit is %d bytes\n", size_limit);
+if (msgsize >= size_limit) {
+//  if ( DebugFlag > 0 ) { // now logging also when debug is off
+    fprintf(stderr, "simscan: big file (%lu bytes); size limit is %d bytes; skipping SpamAssassin\n",
+      (unsigned long) msgsize, size_limit);
+//  }
+/* end attachments-size-limit patch */
 } else {
   /* re-open the file read only */
   if ( (fd = open(message_name, O_RDONLY)) == -1 ) {
