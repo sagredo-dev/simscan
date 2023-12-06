@@ -5,7 +5,7 @@ https://notes.sagredo.eu/en/qmail-notes-185/installing-and-configuring-simscan-3
 Post any issue there.
 
 Overview
-=======
+========
 SimScan is a simplified scanner for qmail similar to qmail-scanner and qscand.
 It uses clamav, trophie, and/or spamassassin.  It also supports attachment
 blocking by extension.  Simscan is written entirely in C to ensure maximum
