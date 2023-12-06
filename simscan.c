@@ -1315,7 +1315,7 @@ int check_spam()
     spamc_args[i++] = "-u";
     spamc_args[i++] = spamuser;
 #ifdef ENABLE_SPAMC_USER
-  } else if ( MaxRcptTo==1 && i<MAX_SPAMC_ARGS-2 && strlen(spamuser) == 0) {
+  } else if ( MaxRcptTo>0 && i<MAX_SPAMC_ARGS-2 && strlen(spamuser) == 0) {
     spamc_args[i++] = "-u";
     spamc_args[i++] = RcptTo[0];
 #endif
