@@ -5,7 +5,7 @@ https://notes.sagredo.eu/en/qmail-notes-185/installing-and-configuring-simscan-3
 Post any issue there.
 
 Overview
-========
+--------
 SimScan is a simplified scanner for qmail similar to qmail-scanner and qscand.
 It uses clamav, trophie, and/or spamassassin.  It also supports attachment
 blocking by extension.  Simscan is written entirely in C to ensure maximum
@@ -14,7 +14,7 @@ reject spam mail.
 
 
 Requirements
-============
+------------
 * ripmime (If you plan on using attachment blocking)<br>
 * qmail with qmail-queue patch<br>
 * clamav (optional)<br>
@@ -23,7 +23,7 @@ Requirements
 
 
 How it works
-============
+---------------
 * Simscan creates a temporary working directory. You can specify the base
 working directory with the --enable-workdir=/path. The default location
 of this base is the  /var/qmail/simscan directory. The temporary working
@@ -68,6 +68,7 @@ unless the SIMSCAN_DEBUG environment variable is set.
 = Configuration Options =
 Following is a list of all of the configure options and defaults:
 
+```
   --enable-user=<user>              Change the user for simscan.
                                     Default: simscan.
   --enable-clamav=y|n               Turn on clamav scanning. default yes.
@@ -98,20 +99,23 @@ Following is a list of all of the configure options and defaults:
   --enable-received=y|n             Simscan should add a received line showing
                                     the version of all scanners that checked
                                     the message
+```
 
 These options are only needed when the received line option (--enabled-received=y)
 and the corresponding scanners are enabled as well:
 
+```
   --enable-spamassassin-path=PATH   Path to the spamassassin binary
   --enable-clamavdb-path=PATH       Directory where the clamav master.cvd and
                                     daily.cvd files are saved
   --enable-sigtool-path=PATH        Path to the sigtool binary
-
+```
 
 Configuration Details
-=====================
+----------------------
 Below are more detailed descriptions of each configuration option.
 
+```
 --enable-user=<user>
    This option defines the user that simscan will run as.  By default, the
    user is 'simscan'.
@@ -224,10 +228,10 @@ Below are more detailed descriptions of each configuration option.
 --enable-sigtool-path=PATH
    This option defines the full path to the sigtool binary.  This option is only
    necessary if the received line option (--enable-received) is chosen.
-
+```
 
 Attachment blocking option
-==========================
+------------------------
 
 Attachments can be blocked. It is disabled by default.
 If you use the per domain scanning as well, look in that section of the
@@ -237,50 +241,55 @@ this:
 
 Put the list of attachments in /var/qmail/control/ssattach.
 List each attachment on it's own line. For example:
+```
   [user@mailserver user]$ cat /var/qmail/control/ssattach
   .jpg
   .mp3
   .scr
   .bat
+```
 
 Then configure with:
+```
   ./configure --enable-attach (with any other options you want)
   make
   make install-strip
+```
 
-
-= SpamAssassin options =
--------------------------------------------------
+SpamAssassin options
+--------------------
 There are four different ways to configure simscan with spamassassin
 * no spam processing
   This is the default. No spamassassin processing will be done.
 
 * Reject email at smtp level if spamassassin considers it spam. This might reject false positives (good email that looks like spam)
-  --enable-spam
+  ```--enable-spam```
 
 * Reject email above a "score" of some number, like 15 and pass everything else through to the user.
-  --enable-spam --enable-spam-hits=15
+  ```--enable-spam --enable-spam-hits=15```
 
 * Do not reject anything. Pass the spamassassin processed message through to the user
-  --enable-spam --enable-spam-passthru
+  ```--enable-spam --enable-spam-passthru```
 
 In addtion you can enable per user preference processing for email with just one recipient. Add the following option
-  --enable-spamc-user
+  ```--enable-spamc-user```
 
 Look at the rc.spamd sample startup script for spamd options that work with vpopmail and per user preferences. Also look at the contrib directory for patches to spamassassin to make vpopmail/per user processing work.
 
 
-= Trophie/Sophie option =
+Trophie/Sophie option
+----------------------
 To enable the trophie virus scanner :
-
+```
   ./configure --enable-trophie-socket=/path/to/the/socket \
     --enable-trophie-path=/path/to/trophie/binary
-
+```
 As sophie uses the same interface it may work as well,
 but is not tested!
 
 
-= How SMTP rejection works =
+How SMTP rejection works
+------------------------
 There are currently three options for handling SMTP rejection.  SMTP
 rejection occurs when a virus is detected, or when the spam score is
 over the spam-hits level.
@@ -312,22 +321,25 @@ attachment :
 
 
 Enable Per Domain processing
-============================
+----------------------------
 To enable per domain processing :
-
+```
   ./configure --enable-per-domain (with any other options you want)
   make
   make install-strip
+```
 
 Edit the /var/qmail/control/simcontrol text file
 You can enable/disable clam/spam/trophie/attachments per domain
 and per user and set a default for the whole machine.
 
 Here is an example:
+```
   [user@mailserver user]$ cat /var/qmail/control/simcontrol
   postmaster@example.com:clam=yes,spam=no,attach=.txt:.com
   example.com:clam=no,spam=yes,attach=.mp3
   :clam=yes,spam=yes,trophie=yes,spam_hits=20.1
+```
 
 The third line sets the default for the whole machine to
 enable clam,trophie, spam scanning, and sets the reject level for
@@ -340,10 +352,11 @@ The first line sets clam on and spam off for postmaster@example.com and
 .txt and .com files for the attachment names.
 
 The order of precedence is:
+```
   email address (overrides all)
   domain (overrides default)
   default (only used if not overridden by domain or email address.
-
+```
 First the sender address will be looked up and then the recipients.
 Without any matches, no scans will be done.
 
@@ -356,13 +369,14 @@ If you are using the --enable-received option, you also need to run simscanmk wi
 Qmail extensions are handled like this: the address is broken into their
 parts and are looked up.  test-list-owner@test.ch looks up:
 
+```
   test@test.ch
   test-list@test.ch
   test-list-owner@test.ch
-
+```
 
 Security
-========
+----------
 The simscan program is restricted to running setuid simscan
 to protect the rest of the system. It does all of it's work
 in the /var/qmail/simscan directory (default location).
@@ -372,22 +386,24 @@ in the /var/qmail/simscan directory which is owned by simscan.
 
 
 Permissions and ClamAntiVirus
-=============================
+-----------------------------
 To get ClamAV to play nicely with simscan's permissions you have two options:
 * run clamd as root
 * Add clamav to simscan's group. Then clamav will have access
 to the working directory and it's files. On Linux like systems:
 usermod -G simscan clamav
 
-= How to chain additional scanning programs with simscan =
+How to chain additional scanning programs with simscan
+---------------------------
 When simscan finishes it expects to call a program that reads
 the file descriptors like qmail-queue does. You can configure
 simscan to call a different program. By default the configure
 script picks up the path to your qmail-queue program, which
 is normally /var/qmail/bin/qmail-queue. Use this configure option:
 
+```
   --enable-qmail-queue=PATH
-
+```
 where PATH is full path to qmail-queue program.
 
 I do not know why you would want to have another scanning process happen,
@@ -395,39 +411,44 @@ but you can sure configure it before compiling.
 
 
 How to Disable/Enable simscan for smtp connections by IP ranges
-===============================================================
+-------------------------------
 Use the standard tcp.smtp text file to set or not set the QMAILQUEUE
 environment variable per IP ranges. qmails smtp server is normally
 run via tcpserver with the -x option to the constant database file
 tcp.smtp.cdb.
 
 Example:
-Turn simscan off for our machines loopback address (127.*.*.*).<br>
-Disable it for hypothetical local linux users on the 192.168.1.* lan.<br>
-Enable it for hypothetical local windows users on the 192.168.2.* lan.<br>
-Finally, we enable simscan(clamav/spamassassin) for all those untrusted
-internet email senders.
+Turn simscan off for our machines loopback address (127.*.*.*).
+
+Disable it for hypothetical local linux users on the 192.168.1.* lan.
+
+Enable it for hypothetical local windows users on the 192.168.2.* lan.
+
+Finally, we enable simscan(clamav/spamassassin) for all those untrusted internet email senders.
 
 Example tcp.smtp file contents:
+```
   [user@mailserver user]$ cat tcp.smtp
   127.:allow,RELAYCLIENT=""
   192.168.1.:allow,RELAYCLIENT=""
   192.168.2.:allow,RELAYCLIENT="",QMAILQUEUE="/var/qmail/bin/simscan"
   :allow,QMAILQUEUE="/var/qmail/bin/simscan"
+```
 
 This tcp.smtp file then needs to be compiled into the tcp.smtp.cdb file
 using your systems method of generating it. If you only need the rules
 in the tcp.smtp file you can compile it with this command:
 
+```
   [user@mailserver user]$ cd /to/directory/where/your/tcp.smtp.cdb file lives
   [user@mailserver user]$ /usr/local/bin/tcprules tcp.smtp.cdb tempfile < tcp.smtp
+```
 
 Once compiled, the rules take effect immediately. Actually it
 takes effect on every new smtp connection.
 
-
 Temporary File Management
-=========================
+--------------------------
 Simscan uses unique file names for the message, to/from headers and the
 optional spamassassin output. The files are created in the unique simscan
 work directory for this process. The files are unlinked along with the
@@ -446,7 +467,7 @@ Temporary files and directories are not deleted if the SIMSCAN_DEBUG
 environment variable is set.
 
 Sample qmail startup script
-===========================
+---------------------------
 rc.qmail in the contrib directory is our sample qmail startup script. It shows you how you
 can set the QMAILQUEUE environment variable to call simscan for
 all incoming SMTP email.
@@ -455,11 +476,10 @@ Notice that we run our smtp server as root. We also run clamd as root. If you ar
 problems you may want to consider running both as root.
 
 Sample spamassassin startup script
-==================================
+----------------------------------
 rc.spamd in the contrib directory is a sample spamd startup script.
 It sets enables the vpopmail and per user perferences option. It also
 sets the spamd socket to /tmp/spamd.sock. 
 
 You must use the --enable-spamc-args="-U /tmp/spamd.sock" option to
 simscan if you use this startup script.
-
