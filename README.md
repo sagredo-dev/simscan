@@ -1,7 +1,8 @@
 # simscan
 
 Additional information and a guide can be found at
-https://notes.sagredo.eu/en/qmail-notes-185/installing-and-configuring-simscan-38.html
+https://notes.sagredo.eu/en/qmail-notes-185/installing-and-configuring-simscan-38.html.
+
 Post any issue there.
 
 Overview
