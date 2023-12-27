@@ -97,9 +97,7 @@ Following is a list of all of the configure options and defaults:
   --enable-trophie-path=PATH        Full path to the trophie binary.
   --enable-trophie-socket=PATH      Full path to the trophie socket.
   --enable-ripmime=PATH             Full path to ripmime program.
-  --enable-received=y|n             Simscan should add a received line showing
-                                    the version of all scanners that checked
-                                    the message
+  --enable-received=y|n             Simscan should add a received line showin the version of all scanners that checked the message
 ```
 
 These options are only needed when the received line option (--enabled-received=y)
