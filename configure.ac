@@ -1,9 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT([simscan], [1.4.2])
+AC_PREREQ([2.71])
+AC_INIT([simscan],[1.4.3])
 AC_CONFIG_SRCDIR([simscan.c])
-AM_INIT_AUTOMAKE
-AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE()
+AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST
 AC_CHECK_FUNCS([strsep])
 
@@ -22,24 +23,21 @@ AC_ARG_ENABLE(user, [  --enable-user=<user> Change the user for simscan.  Defaul
 	[
 		ENABLE_USER="simscan"
 	])
-	
+
 AC_MSG_CHECKING(whether the $ENABLE_USER user exists)
-AC_TRY_RUN( [
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
   #include <pwd.h>
 
   int main() {
     struct passwd *pw;
-        if (( pw=getpwnam("$ENABLE_USER")) != 0 ) return 0; 
+        if (( pw=getpwnam("$ENABLE_USER")) != 0 ) return 0;
         else return 1;
 	return -1;
   }
-  ],
-    AC_MSG_RESULT(yes),
-    AC_MSG_RESULT(no)
-    AC_MSG_ERROR(could not find the $ENABLE_USER user.  Please add the $ENABLE_USER user and try again.),
-    AC_MSG_RESULT(no)
+  ]])],[AC_MSG_RESULT(yes)],[AC_MSG_RESULT(no)
+    AC_MSG_ERROR(could not find the $ENABLE_USER user.  Please add the $ENABLE_USER user and try again.)],[AC_MSG_RESULT(no)
     AC_MSG_ERROR(could not find the $ENABLE_USER user.  Please add the $ENABLE_USER user and try again.)
-)
+])
 
 AC_SUBST(ENABLE_USER)
 
@@ -748,9 +746,12 @@ esac
 #----------------------------------------------------------------------
 
 
-AC_OUTPUT(Makefile)
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
 
 echo ""
+echo "---------------------------------------"
+echo "             $PACKAGE_NAME  $PACKAGE_VERSION"
 echo "            Current settings"
 echo "---------------------------------------"
 echo " user                  = $ENABLE_USER"

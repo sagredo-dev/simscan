@@ -1,3 +1,7 @@
+27/01/2024 version 1.4.3 Roberto Puzzanghera
+        - fixed several compilation warnings
+        - fixed several autotools warnings
+
 06/12/2023 Roberto Puzzanghera
         - added jms "debug" patch, to improve the debugging of simscan on
           qmail-smtpd log;

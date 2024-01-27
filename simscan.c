@@ -90,7 +90,7 @@ char *spamc_args[MAX_SPAMC_ARGS];
 /* Global work buffers */
 #define BUFFER_SIZE 2048
 char buffer[BUFFER_SIZE];
-char message_name[BUFFER_SIZE];
+char message_name[BUFFER_SIZE+10];
 char workdir[BUFFER_SIZE];
 char unique_ext[BUFFER_SIZE];
 
@@ -110,7 +110,7 @@ char *viri_args[] = { "clamdscan", "--stdout", message_name, NULL };
 /* To/From address processing globals */
 #define MAX_RCPT_TO 255
 #define MAX_EMAIL 500
-char addr_name[BUFFER_SIZE];
+char addr_name[BUFFER_SIZE+5];
 char *addr_buff;
 int  MaxRcptTo;
 char MailFrom[MAX_EMAIL];
@@ -148,7 +148,7 @@ void per_domain_email_lookup (char *email);
 
 /* Customer Smtp reject message globals */
 #ifdef ENABLE_CUSTOM_SMTP_REJECT
-char RejectMsg[500];
+char RejectMsg[BUFFER_SIZE+100];
 #endif
 
 /* Generic virus scanner globals */
@@ -194,7 +194,7 @@ float DSpamConf=0.0;
 #if defined(ENABLE_DSPAM)
 int InHeaders;
 int  IsSpam;
-char spam_message_name[BUFFER_SIZE];
+char spam_message_name[BUFFER_SIZE+10];
 int check_dspam();
 int is_dspam(char *spambuf);
 #endif
@@ -207,7 +207,7 @@ float SAReqHits;
 char spamuser[BUFFER_SIZE];
 int InHeaders;
 int  IsSpam;
-char spam_message_name[BUFFER_SIZE];
+char spam_message_name[BUFFER_SIZE+10];
 int check_spam();
 int is_spam(char *spambuf);
 #endif
@@ -645,7 +645,8 @@ if (msgsize >= size_limit) {
       /* spamassassin processed message and no spam detected */
     case 0:
       /* open the spam file read only */
-      strncpy(message_name,spam_message_name,BUFFER_SIZE);
+//      strncpy(message_name,spam_message_name,BUFFER_SIZE);
+      memcpy(message_name,spam_message_name,BUFFER_SIZE);
       break;
       /* errors , return temporary error */
     default:
@@ -1111,7 +1112,8 @@ int is_clam(char *clambuf)
          }
 
          if ( (tmpstr=strstr(&clambuf[j], "FOUND")) != NULL ) {
-           while(*tmpstr!=':' && tmpstr>clambuf) --tmpstr; ++tmpstr;
+           while(*tmpstr!=':' && tmpstr>clambuf) --tmpstr;
+           ++tmpstr;
            virus_name = strtok(tmpstr, " ");
            memset(VirusName,0,sizeof(VirusName));
            strncpy(VirusName, virus_name, sizeof(VirusName)-1);
@@ -1546,7 +1548,7 @@ void format_dir(char *workdir)
   snprintf(unique_ext, sizeof(unique_ext),"%ld.%ld.%ld", 
     mytime.tv_sec, mytime.tv_usec, (long int)getpid());
 
-  snprintf(workdir,BUFFER_SIZE, "%s/%s", WORKDIR, unique_ext); 
+  snprintf(workdir,BUFFER_SIZE+100, "%s/%s", WORKDIR, unique_ext); 
 
 }
 
@@ -1756,7 +1758,8 @@ void add_attach (char *list)
   MaxAttach = 0;
   if ( DebugFlag > 3 ) fprintf(stderr, "simscan:[%d]: add_attach called with %s\n", getppid(), list);  
   while( ( found = strsep(&list,":") ) != NULL) {
-    strncpy(bk_attachments[MaxAttach], found, strlen(found));
+//    strncpy(bk_attachments[MaxAttach], found, strlen(found));
+    memcpy(bk_attachments[MaxAttach], found, strlen(found));
     if ( DebugFlag > 1 ) {
       fprintf(stderr, "simscan:[%d]: %s is attachment number %d\n", getppid(), 
       bk_attachments[MaxAttach], MaxAttach);  
@@ -1798,7 +1801,7 @@ int check_attach()
           return(1);
         }
       } else {
-        if ( DebugFlag > 2 ) fprintf(stderr, "simscan: attachment name '%s' (%d) is shorter than '%s' (%d). IGNORED\n", mydirent->d_name, strlen( mydirent->d_name ), bk_attachments[i], strlen( bk_attachments[i] ) );
+        if ( DebugFlag > 2 ) fprintf(stderr, "simscan: attachment name '%s' (%lu) is shorter than '%s' (%lu). IGNORED\n", mydirent->d_name, strlen( mydirent->d_name ), bk_attachments[i], strlen( bk_attachments[i] ) );
       }
     }
   }
@@ -1818,8 +1821,10 @@ int str_rstr(register char *h,register char *n)
  register char *sh;
  register char *sn;
 
-  for(sh=h;*h!=0;++h); --h;
-  for(sn=n;*n!=0;++n); --n;
+  for(sh=h;*h!=0;++h);
+  --h;
+  for(sn=n;*n!=0;++n);
+  --n;
 
   for(;h>=sh && n>=sn;--h,--n) {
     if ( *h!=*n ) {
@@ -1895,7 +1900,8 @@ void per_domain_lookup( char *key )
 
 #ifdef ENABLE_SPAM
     } else if ( strcasecmp(parm,"spamuser") == 0 ) {
-      strncpy(spamuser,val,BUFFER_SIZE);
+//      strncpy(spamuser,val,BUFFER_SIZE);
+      memcpy(spamuser,val,BUFFER_SIZE);
       if ( DebugFlag > 1 ) fprintf(stderr, "simscan:[%d]: spamuser = %s\n", getppid(), spamuser);
 #endif
 
@@ -1980,7 +1986,8 @@ void per_domain_email_lookup (char *email) {
     per_domain_lookup( domain ); 
   }
  
-  strncpy(local,email, sizeof(local)); 
+//  strncpy(local,email, sizeof(local));
+  memcpy(local,email, sizeof(local));
   for(l_ptr=local; l_ptr!=NULL && *l_ptr!='@' && *l_ptr!='\0'; ++l_ptr );
   *l_ptr='\0';
   if ( DebugFlag > 1 ) fprintf(stderr, "simscan:[%d]: pelookup: local part is %s\n", getppid(), local);
