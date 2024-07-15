@@ -104,6 +104,8 @@ char *replace(char *string, char *oldpiece, char *newpiece);
 int DebugFlag = 0;
 int DebugFiles = 0;
 
+int size_limit = 250000;
+
 /* --stdout is required for reading virus names */
 char *viri_args[] = { "clamdscan", "--stdout", message_name, NULL };
 
@@ -255,7 +257,6 @@ int main(int argc, char **argv)
  int i = 0;
  int gotrcpt = 0;
  int gotfrom = 0;
- int size_limit=250000;
 
   /* print out version information if requested */
   if ( argc > 1 && strcmp(argv[1],"-v" )==0 ) {
@@ -554,6 +555,7 @@ int main(int argc, char **argv)
 #endif
 
 #ifdef ENABLE_SPAM
+/* attachments-size-limit patch */
 if ( DebugFlag > 0 ) fprintf(stderr, "simscan: size limit is %d bytes\n", size_limit);
 if (msgsize >= size_limit) {
 //  if ( DebugFlag > 0 ) { // now logging also when debug is off
@@ -1912,6 +1914,12 @@ void per_domain_lookup( char *key )
       }
       if ( DebugFlag > 1 ) fprintf(stderr, "simscan:[%d]: spampassthru = %s/%d\n", getppid(), val, PerDomainSpamPassthru);
 #endif   
+    /* size limit - if exceeded the attachment won't be passed to spamassassin */
+    } else if ( strcasecmp(parm,"size_limit") == 0) {
+      if ( DebugFlag > 1 ) fprintf(stderr, "simscan:[%d]: default size limit is = %d\n", getppid(), size_limit);
+      size_limit = atoi(val);
+      if ( DebugFlag > 1 ) fprintf(stderr, "simscan:[%d]: assigned size limit is = %d\n", getppid(), size_limit);
+    /* end size limit */
     } else {
       if ( DebugFlag > 1 ) fprintf(stderr, "simscan:[%d]: unimplemented flag %s = %s\n", getppid(), parm, val);
     }
