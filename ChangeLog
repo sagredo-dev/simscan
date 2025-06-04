@@ -1,3 +1,11 @@
+04/06/2025 version 1.4.5 cystein
+        - Scanning the entire /var/qmail/simscan/workdir directory with clamdscan
+
+15/07/2024 version 1.4.4 Roberto Puzzanghera
+        - the size limit on attachments to be passed to spamassassin is
+          now set by the simcontrol file (size_limit variable) and not
+          by means of the simsizelimit control file
+
 27/01/2024 version 1.4.3 Roberto Puzzanghera
         - fixed several compilation warnings
         - fixed several autotools warnings
