@@ -107,7 +107,7 @@ int DebugFiles = 0;
 int size_limit = 250000;
 
 /* --stdout is required for reading virus names */
-char *viri_args[] = { "clamdscan", "--stdout", message_name, NULL };
+char *viri_args[] = { "clamdscan", "--stdout", workdir, NULL };
 
 /* To/From address processing globals */
 #define MAX_RCPT_TO 255
