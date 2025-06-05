@@ -963,10 +963,10 @@ int run_ripmime()
 #ifdef ENABLE_CLAMAV
 int check_clam()
 {
- int pid;
- int rmstat;
- int pim[2];
- int file_count;
+  int pid;
+  int rmstat;
+  int pim[2];
+  int file_count;
 
 #ifdef ENABLE_PER_DOMAIN
   if ( PerDomainClam == 0 ) return(-2);
@@ -992,36 +992,40 @@ int check_clam()
       _exit(-1);
   }
   close(pim[1]);
-  dup2(pim[0],0);
-  close(pim[0]);
 
   InClamHeaders = 1;
   memset(buffer,0,sizeof(buffer));
-  while((file_count=read(0,buffer,BUFFER_SIZE))>0) {
-    if ( DebugFlag > 2 ) log_clam(buffer) ;
+  while((file_count=read(pim[0],buffer,BUFFER_SIZE))>0) {
+    if ( DebugFlag > 2 ) log_clam(buffer);
     if ( InClamHeaders == 1 ) {
       is_clam(buffer);
     }
     memset(buffer,0,sizeof(buffer));
   }
+  close(pim[0]);
 
   /* wait for clamdscan to finish */
-  if (waitpid(pid,&rmstat, 0) == -1) { 
+  if (waitpid(pid,&rmstat, 0) == -1) {
+    fprintf(stderr, "simscan: error waiting for clamdscan pid\n");
     return(-1);
   }
 
-  /* check if the child died on a signal */
-  if ( WIFSIGNALED(rmstat) ) return(-1);
+  if ( WIFSIGNALED(rmstat) ) {
+    fprintf(stderr, "simscan: clamdscan terminated by signal\n");
+    return(-1);
+  }
 
 #ifdef ENABLE_RECEIVED
   add_run_scanner(RCVD_CLAM_KEY);
 #endif
-  /* if it exited okay, return the status */ 
+
   if ( WIFEXITED(rmstat) ) {
-    return(WEXITSTATUS(rmstat));
+    int ret = WEXITSTATUS(rmstat);
+    fprintf(stderr, "simscan: clamdscan exited with code %d\n", ret);
+    return ret;
   }
 
-  /* should not reach here */
+  fprintf(stderr, "simscan: unexpected clamdscan termination\n");
   return(-1);
 }
 
