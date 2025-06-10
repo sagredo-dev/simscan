@@ -1,3 +1,7 @@
+04/06/2025 version 1.4.6 cystein
+        - enhanced the ClamAV integration by logging the full summary of
+          clamdscan to stderr
+
 04/06/2025 version 1.4.5 cystein
         - Scanning the entire /var/qmail/simscan/workdir directory with clamdscan
 
