@@ -104,3 +104,10 @@ m4/
 # can automatically generate from config.status script
 # (which is called by configure script))
 Makefile
+
+# simscan specific compilation files
+cdb/makelib
+cdb/systype
+cdb/uint32.h
+simscan
+simscanmk
