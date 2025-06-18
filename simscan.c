@@ -996,7 +996,7 @@ int check_clam()
   InClamHeaders = 1;
   memset(buffer,0,sizeof(buffer));
   while((file_count=read(pim[0],buffer,BUFFER_SIZE))>0) {
-    log_clam(buffer);
+    if ( DebugFlag > 2 ) log_clam(buffer) ;
     if ( InClamHeaders == 1 ) {
       is_clam(buffer);
     }
