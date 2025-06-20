@@ -1,4 +1,4 @@
-04/06/2025 version 1.4.6 cystein
+04/06/2025 version 1.4.6.1 cystein
         - enhanced the ClamAV integration by logging the full summary of
           clamdscan to stderr
 
