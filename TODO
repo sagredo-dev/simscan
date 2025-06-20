@@ -1,3 +1,15 @@
+
+Todo List - Community Contributions
+
+Add support for validating RCPT TO recipients against a vpopmail+MySQL backend. (#cystein)
+
+  - Useful for configurations where user accounts are stored vpopmail+MySQL.
+  - Simscan should reject messages at RCPT TO stage if recipient is unknown.
+  - Prevents unnecessary virus/spam scanning for invalid recipients.
+
+  
+-------------------------------------------------------------------------------
+
 Todo List - Friz
 
 Logging of message-id along with other information currently logged
