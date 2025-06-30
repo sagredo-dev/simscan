@@ -1,5 +1,5 @@
 30/06/2025 version 1.4.6.2
-        - hiding a debug messages that appear even when debug is off
+        - hiding debug messages that appear even when debug is off
 
 04/06/2025 version 1.4.6.1 cystein
         - enhanced the ClamAV integration by logging the full summary of
