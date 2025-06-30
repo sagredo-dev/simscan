@@ -1008,12 +1008,16 @@ int check_clam()
 
   /* wait for clamdscan to finish */
   if (waitpid(pid,&rmstat, 0) == -1) {
-    fprintf(stderr, "simscan: error waiting for clamdscan pid\n");
+    if ( DebugFlag > 0 ) {
+      fprintf(stderr, "simscan: error waiting for clamdscan pid\n");
+    }
     return(-1);
   }
 
   if ( WIFSIGNALED(rmstat) ) {
-    fprintf(stderr, "simscan: clamdscan terminated by signal\n");
+    if ( DebugFlag > 0 ) {
+      fprintf(stderr, "simscan: clamdscan terminated by signal\n");
+    }
     return(-1);
   }
 
@@ -1023,11 +1027,15 @@ int check_clam()
 
   if ( WIFEXITED(rmstat) ) {
     int ret = WEXITSTATUS(rmstat);
-    fprintf(stderr, "simscan: clamdscan exited with code %d\n", ret);
+    if ( DebugFlag > 0 ) {
+      fprintf(stderr, "simscan: clamdscan exited with code %d\n", ret);
+    }
     return ret;
   }
 
-  fprintf(stderr, "simscan: unexpected clamdscan termination\n");
+  if ( DebugFlag > 0 ) {
+    fprintf(stderr, "simscan: unexpected clamdscan termination\n");
+  }
   return(-1);
 }
 
