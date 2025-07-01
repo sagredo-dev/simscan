@@ -732,6 +732,11 @@ if (msgsize >= size_limit) {
 
 #ifdef ENABLE_DROPMSG
     log_message("VIRUS DROPPED", VirusName, 0);
+
+  #ifdef QUARANTINEDIR
+    quarantine_msg(message_name);
+  #endif
+
     /* Drop the message, returning success to sender. */
     exit_clean(EXIT_0);
 #else
