@@ -1,6 +1,6 @@
 Bug fix by Bob Greco where a received message with multiple 'local' recipients executes spamc
 as null user and not as the user extracted from the first local recipient.
-https://notes.sagredo.eu/en/qmail-notes-185/simscan-38.html#comment844
+https://www.sagredo.eu/en/qmail-notes-185/simscan-38.html#comment844
 
 diff -ruN ../simscan-1.4.1-original/simscan.c simscan-1.4.1/simscan.c
 --- ../simscan-1.4.1-original/simscan.c	2015-01-23 09:57:43.000000000 +0100
