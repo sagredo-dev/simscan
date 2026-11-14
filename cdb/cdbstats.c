@@ -1,9 +1,11 @@
+#include <unistd.h>
 #include "uint32.h"
 #include "fmt.h"
 #include "buffer.h"
 #include "strerr.h"
 #include "seek.h"
 #include "cdb.h"
+#include "str.h"
 
 #define FATAL "cdbstats: fatal: "
 
@@ -68,7 +70,7 @@ static struct cdb c;
 static unsigned long numrecords;
 static unsigned long numd[11];
 
-main()
+int main()
 {
   uint32 eod;
   uint32 klen;

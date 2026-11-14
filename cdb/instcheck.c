@@ -10,15 +10,7 @@ extern void hier();
 #define FATAL "instcheck: fatal: "
 #define WARNING "instcheck: warning: "
 
-void perm(prefix1,prefix2,prefix3,file,type,uid,gid,mode)
-char *prefix1;
-char *prefix2;
-char *prefix3;
-char *file;
-int type;
-int uid;
-int gid;
-int mode;
+void perm(char *prefix1, char *prefix2, char *prefix3, char *file, int type, int uid, int gid, int mode)
 {
   struct stat st;
 
@@ -40,46 +32,26 @@ int mode;
     strerr_warn6(WARNING,prefix1,prefix2,prefix3,file," has wrong type",0);
 }
 
-void h(home,uid,gid,mode)
-char *home;
-int uid;
-int gid;
-int mode;
+void h(char *home, int uid, int gid, int mode)
 {
   perm("","","",home,S_IFDIR,uid,gid,mode);
 }
 
-void d(home,subdir,uid,gid,mode)
-char *home;
-char *subdir;
-int uid;
-int gid;
-int mode;
+void d(char *home, char *subdir, int uid, int gid, int mode)
 {
   if (chdir(home) == -1)
     strerr_die4sys(111,FATAL,"unable to switch to ",home,": ");
   perm("",home,"/",subdir,S_IFDIR,uid,gid,mode);
 }
 
-void p(home,fifo,uid,gid,mode)
-char *home;
-char *fifo;
-int uid;
-int gid;
-int mode;
+void p(char *home, char *fifo, int uid, int gid, int mode)
 {
   if (chdir(home) == -1)
     strerr_die4sys(111,FATAL,"unable to switch to ",home,": ");
   perm("",home,"/",fifo,S_IFIFO,uid,gid,mode);
 }
 
-void c(home,subdir,file,uid,gid,mode)
-char *home;
-char *subdir;
-char *file;
-int uid;
-int gid;
-int mode;
+void c(char *home, char *subdir, char *file, int uid, int gid, int mode)
 {
   if (chdir(home) == -1)
     strerr_die4sys(111,FATAL,"unable to switch to ",home,": ");
@@ -88,20 +60,14 @@ int mode;
   perm(".../",subdir,"/",file,S_IFREG,uid,gid,mode);
 }
 
-void z(home,file,len,uid,gid,mode)
-char *home;
-char *file;
-int len;
-int uid;
-int gid;
-int mode;
+void z(char *home, char *file, int len, int uid, int gid, int mode)
 {
   if (chdir(home) == -1)
     strerr_die4sys(111,FATAL,"unable to switch to ",home,": ");
   perm("",home,"/",file,S_IFREG,uid,gid,mode);
 }
 
-main()
+int main()
 {
   hier();
   _exit(0);

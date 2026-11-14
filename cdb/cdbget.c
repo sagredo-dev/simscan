@@ -23,7 +23,7 @@ void die_usage(void)
 static struct cdb c;
 char buf[1024];
 
-main(int argc,char **argv)
+int main(int argc,char **argv)
 {
   char *key;
   int r;

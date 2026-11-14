@@ -2,5 +2,8 @@
 #include "buffer.h"
 
 char buffer_2_space[256];
-static buffer it = BUFFER_INIT(write,2,buffer_2_space,sizeof buffer_2_space);
+static buffer it = {
+  buffer_2_space, 0, sizeof buffer_2_space, 2,
+  { .write_op = write }
+};
 buffer *buffer_2 = &it;

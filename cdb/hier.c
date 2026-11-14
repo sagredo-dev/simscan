@@ -1,5 +1,9 @@
 #include "auto_home.h"
 
+void h(char *,int,int,int);
+void d(char *,char *,int,int,int);
+void c(char *,char *,char *,int,int,int);
+
 void hier()
 {
   h(auto_home,-1,-1,02755);
