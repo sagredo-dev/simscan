@@ -1,5 +1,6 @@
-unreleased
+15/11/2026 version 1.4.7
         - message with found viri is now put in quarantine (tx Shah Imran)
+        - fix legacy C declarations and POSIX function prototypes for modern compilers
 
 30/06/2025 version 1.4.6.2
         - hiding debug messages that appear even when debug is off

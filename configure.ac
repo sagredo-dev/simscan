@@ -1,9 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.71])
-AC_INIT([simscan],[1.4.6.2])
+AC_INIT([simscan],[1.4.7])
 AC_CONFIG_SRCDIR([simscan.c])
-AM_INIT_AUTOMAKE()
+AM_INIT_AUTOMAKE([foreign no-dependencies])
+AM_MAINTAINER_MODE([disable])
 AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST
 AC_CHECK_FUNCS([strsep])
