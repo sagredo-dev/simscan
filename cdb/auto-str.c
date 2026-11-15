@@ -3,17 +3,17 @@
 #include "exit.h"
 
 char buf1[256];
-buffer ss1 = BUFFER_INIT(write,1,buf1,sizeof(buf1));
+buffer ss1 = {
+  buf1, 0, sizeof(buf1), 1,
+  { .write_op = write }
+};
 
-void puts(s)
-char *s;
+void outstr(char *s)
 {
   if (buffer_puts(&ss1,s) == -1) _exit(111);
 }
 
-main(argc,argv)
-int argc;
-char **argv;
+int main(int argc, char **argv)
 {
   char *name;
   char *value;
@@ -25,20 +25,20 @@ char **argv;
   value = argv[2];
   if (!value) _exit(100);
 
-  puts("char ");
-  puts(name);
-  puts("[] = \"\\\n");
+  outstr("char ");
+  outstr(name);
+  outstr("[] = \"\\\n");
 
   while (ch = *value++) {
-    puts("\\");
+    outstr("\\");
     octal[3] = 0;
     octal[2] = '0' + (ch & 7); ch >>= 3;
     octal[1] = '0' + (ch & 7); ch >>= 3;
     octal[0] = '0' + (ch & 7);
-    puts(octal);
+    outstr(octal);
   }
 
-  puts("\\\n\";\n");
+  outstr("\\\n\";\n");
   if (buffer_flush(&ss1) == -1) _exit(111);
   _exit(0);
 }
